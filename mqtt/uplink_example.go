@@ -8,7 +8,7 @@ import (
 	"github.com/brocaar/lorawan"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
-	lds "github.com/iegomez/loraserver-device-sim"
+	lds "github.com/willianxz/loratestes/tree/master/mqtt"
 )
 
 func main() {

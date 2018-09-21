@@ -1,0 +1,6 @@
+nwsHexKey = a8773564ebc8f7abdcaac6bd2137dd07
+appHexKey = 1e745697990164f22531bf11e4614ad1
+devHexAddr = 018a6355
+broker = tcp://localhost:1884
+username = 
+password = 

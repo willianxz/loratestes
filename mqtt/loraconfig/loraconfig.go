@@ -231,7 +231,7 @@ func testMIC(appKey [16]byte, appEUI, devEUI [8]byte) error {
 	return nil
 }
 
-//publish publishes a message to the broker.
+//publish publishes a message to the broker. | função que todos os emitters usão para enviar para a rede lora.
 func publish(client MQTT.Client, topic string, v interface{}) error {
 
 	bytes, err := json.Marshal(v)
@@ -239,9 +239,9 @@ func publish(client MQTT.Client, topic string, v interface{}) error {
 		return err
 	}
 	
-
-	fmt.Println("Publishing:")
-	fmt.Println(string(bytes))	
+	//Ocultei todas as informações que ele envia para a rede, para que nos Emitters só mostre que está enviado a menssagem solicitada.
+	//fmt.Println("Publishing:")
+	//fmt.Println(string(bytes)) 	
 
 
 	if token := client.Publish(topic, 0, false, bytes); token.Wait() && token.Error() != nil {

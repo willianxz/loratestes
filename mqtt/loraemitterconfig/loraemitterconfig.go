@@ -26,7 +26,10 @@ type DeviceSetup struct{
 
 
 func SendMessage(menssagem string, nwsHexKey string, appHexKey string, devHexAddr string) {
-	 var frameCont = 2694
+	 var frameCont = 3026  //Esse frameCount tem validação e não pode se repetir, se isso ocorrer não será enviado para a aplicação.
+
+	fmt.Println("Enviando a menssagem: ")
+	fmt.Println(menssagem)	
 
 	//Crie a conexão com o MQTT:
         optionsConfig := Options{"tcp://localhost:1884","", ""}
@@ -134,7 +137,7 @@ func SendMessage(menssagem string, nwsHexKey string, appHexKey string, devHexAdd
 
 
 func SendMessageListener(menssagem string, nwsHexKey string, appHexKey string, devHexAddr string) {
-	 var frameCont = 2600 //Aqui o frameCount sempre será o mesmo.
+	 var frameCont = 2600 //Aqui o frameCount será sempre o mesmo, por que esse send é para o listener sem a validação no frameCount.
 
 	//Crie a conexão com o MQTT:
         optionsConfig := Options{"tcp://localhost:1884","", ""}

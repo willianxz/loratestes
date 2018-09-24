@@ -2,12 +2,30 @@ package main
 
 import (	
 	"fmt"
+	"encoding/base64"
+        "encoding/json"
 	"os"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	LORAEMITTERCONFIG "github.com/willianxz/loraserver-device-sim/loratestes/lora_server_repeater/loraemitterconfig"
         READDATATXT "github.com/willianxz/loraserver-device-sim/loratestes/lora_server_repeater/readdatatxt"
 )
 
+//Como é esperado a menssagem a ser recebida em json:
+type LoraJsonData struct {		
+	ApplicationID     int
+        ApplicationName  string
+	DeviceName       string
+	DevEUI            int
+	TxInfo     struct {
+		frequency int 
+		dr  int
+
+	} `json:"txInfo"`
+	Adr bool
+        FCnt int
+        FPort int
+        Data string
+}
 
 var brokerAllMessages = make(chan bool)
 
@@ -23,12 +41,36 @@ var password = config["password"]
 
 
 func brokerAllMessagesHandler(client MQTT.Client, msg MQTT.Message) {
-	brokerAllMessages <- true	
-	fmt.Printf("[%s] ", msg.Topic())
-	fmt.Printf("%s\n", msg.Payload())
+	brokerAllMessages <- true
+	jsonSrcData := msg.Payload() //Guardamos o json inteiro.
 
+	var loraJsonData LoraJsonData
+	json.Unmarshal(jsonSrcData, &loraJsonData)
+	
+       	
+	fmt.Printf("Esta escutando..")
+	//fmt.Printf("[%s] ", msg.Topic())
+	//fmt.Printf("%s\n", msg.Payload()) //Para mostrar o conteudo inteiro que vem.
+
+	data := loraJsonData.Data
+	
+	fmt.Printf("Recebeu a menssagem.")
+	fmt.Println("Msg recebida encriptografada:",data)
+	
+	
+	sDec, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+	   fmt.Println("decode error:", err)
+	  return
+        }
+
+	
+	fmt.Println("Msg recebida descriptografada:", string(sDec))	
+	fmt.Printf("Redirecionando a menssagem agora.... ")
         //chama a função que envia as informações armazenadas em variaveis para a rede.
-	LORAEMITTERCONFIG.SendMessageListener("Redirecionou a Mensagem", nwsHexKey, appHexKey, devHexAddr)
+	LORAEMITTERCONFIG.SendMessageListener(string(sDec), nwsHexKey, appHexKey, devHexAddr) //Redirecionamos a menssagem recebida para a aplicação "repeater".
+	fmt.Printf("Já emitiu a menssagem.")
+	
 }
 
 

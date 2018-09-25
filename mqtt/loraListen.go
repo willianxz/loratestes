@@ -10,22 +10,6 @@ import (
         READDATATXT "github.com/willianxz/loraserver-device-sim/loratestes/lora_server_repeater/readdatatxt"
 )
 
-//Como é esperado a menssagem a ser recebida em json:
-type LoraJsonData struct {		
-	ApplicationID     int
-        ApplicationName  string
-	DeviceName       string
-	DevEUI            int
-	TxInfo     struct {
-		frequency int 
-		dr  int
-
-	} `json:"txInfo"`
-	Adr bool
-        FCnt int
-        FPort int
-        Data string
-}
 
 var brokerAllMessages = make(chan bool)
 
@@ -44,7 +28,7 @@ func brokerAllMessagesHandler(client MQTT.Client, msg MQTT.Message) {
 	brokerAllMessages <- true
 	jsonSrcData := msg.Payload() //Guardamos o json inteiro.
 
-	var loraJsonData LoraJsonData
+	var loraJsonData LORAEMITTERCONFIG.LoraJsonData
 	json.Unmarshal(jsonSrcData, &loraJsonData)
 	
        	
@@ -89,7 +73,7 @@ func main() {
 		fmt.Println(token.Error())
 	}
 
-	//#
+	//# escuta tudo
 	if token := client.Subscribe("application/1/device/#", 0, brokerAllMessagesHandler); token.Wait() && token.Error() != nil {
 		fmt.Println(token.Error())
 		os.Exit(1)

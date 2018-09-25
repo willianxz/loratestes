@@ -24,9 +24,26 @@ type DeviceSetup struct{
 }
 
 
+//Como é esperado a menssagem a ser recebida em json:
+type LoraJsonData struct {		
+	ApplicationID     int
+        ApplicationName  string
+	DeviceName       string
+	DevEUI            int
+	TxInfo     struct {
+		frequency int 
+		dr  int
+
+	} `json:"txInfo"`
+	Adr bool
+        FCnt int
+        FPort int
+        Data string
+}
+
 
 func SendMessage(menssagem string, nwsHexKey string, appHexKey string, devHexAddr string) {
-	 var frameCont = 3026  //Esse frameCount tem validação e não pode se repetir, se isso ocorrer não será enviado para a aplicação.
+	 var frameCont = 3085  //Esse frameCount tem validação e não pode se repetir, se isso ocorrer não será enviado para a aplicação.
 
 	fmt.Println("Enviando a menssagem: ")
 	fmt.Println(menssagem)	
